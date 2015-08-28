@@ -1,6 +1,6 @@
 ---
 
-- debug: var=groups
+- debug: var=nagios_config_hostgroups
 
 - name: hosts
   template:
@@ -10,6 +10,7 @@
     group: "{{ nagios_config_group }}"
     mode: 0664
   with_items: nagios_config_hosts
+  notify: reload nagios
 
 - name: hostgroups
   template:
@@ -19,6 +20,7 @@
     group: "{{ nagios_config_group }}"
     mode: 0664
   with_items: nagios_config_hostgroups
+  notify: reload nagios
 
 - name: services
   template:
@@ -28,3 +30,4 @@
     group: "{{ nagios_config_group }}"
     mode: 0664
   with_items: nagios_config_services
+  notify: reload nagios
