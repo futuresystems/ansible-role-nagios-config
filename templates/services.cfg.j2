@@ -1,0 +1,19 @@
+#jinja2:lstrip_blocks: True
+# {{ ansible_managed }}
+
+define service {
+  use {{ item.use | default(nagios_config_default_service_use) }}
+
+{% if "host_name" in item %}
+  host_name {{ item.host_name }}
+{% else %}
+  hostgroup_name {{ item.hostgroup_name }}
+{% endif %}
+
+{% for option, value in item.iteritems() %}
+  {% if option in ["name", "host_name", "hostgroup_name"] %}{% continue %}
+  {% endif %}
+  {{ option }} {{ value }}
+{% endfor %}
+
+}

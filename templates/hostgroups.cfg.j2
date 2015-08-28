@@ -1,0 +1,16 @@
+#jinja2:lstrip_blocks: True
+# {{ ansible_managed }}
+
+define hostgroup {
+
+  hostgroup_name {{ item.name | mandatory }}
+  alias {{ item.alias | default(item.name) }}
+  members {{ item.members | mandatory | join(',') }}
+
+{% for option, value in item.iteritems() %}
+  {% if option in ["name", "alias", "members"] %}{% continue %}
+  {% endif %}
+  {{ option }} {{ value }}
+{% endfor %}
+
+}

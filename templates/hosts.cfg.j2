@@ -1,0 +1,22 @@
+#jinja2:lstrip_blocks: True
+# {{ ansible_managed }}
+
+{% for node in item.nodes %}
+define host {
+
+  host_name {{ node }}
+  alias {{ node }}
+  display_name {{ node }}
+
+  max_check_attempts {{ item.max_check_attemps | default(nagios_config_default_host_max_check_attempts) }}
+
+{% for option, value in item.iteritems() %}
+  {% if option in ["name", "nodes", "max_check_attempts"] %}{% continue %}
+  {% endif %}
+  {{ option }} {{ value }}
+{% endfor %}
+
+}
+{% endfor %}
+
+

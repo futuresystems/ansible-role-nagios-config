@@ -1,0 +1,37 @@
+---
+
+nagios_config_user: nagios
+nagios_config_group: nagios
+nagios_config_hosts_path: /usr/local/nagios/etc/servers
+nagios_config_hostgroups_path: /usr/local/nagios/etc/hostgroups.d
+nagios_config_services_path: /usr/local/nagios/etc/services.d
+
+#section: default service definitions
+nagios_config_default_service_use: generic-service
+
+#section: default host definitions
+nagios_config_default_host_check_command: check-host-alive
+nagios_config_default_host_initial_state: o
+nagios_config_default_host_max_check_attempts: 5
+nagios_config_default_host_check_interval: 10
+nagios_config_default_host_retry_interval: 1
+nagios_config_default_host_check_period: 24x7
+nagios_config_default_host_active_checks_enabled: 1
+nagios_config_default_host_passive_checks_enabled: 1
+nagios_config_default_host_obsess_over_host: 0
+nagios_config_default_host_check_freshness: 1
+nagios_config_default_host_freshness_threshold: 0
+nagios_config_default_host_flap_detection_enabled: 1
+nagios_config_default_host_flap_detection_options: [o,d,u]
+nagios_config_default_host_low_flap_threshold: 0
+nagios_config_default_host_high_flap_threshold: 0
+nagios_config_default_host_process_perf_data: 1
+nagios_config_default_host_contact_groups: [admins]
+nagios_config_default_host_notification_interval: 30
+nagios_config_default_host_notification_period: 24x7
+nagios_config_default_host_first_notification_delay: 0
+nagios_config_default_host_notification_options: [d,u,r,f,s]
+nagios_config_default_host_notifications_enabled: 1
+nagios_config_default_host_stalking_options: []
+
+#section: default service definitions

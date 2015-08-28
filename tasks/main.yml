@@ -1,0 +1,30 @@
+---
+
+- debug: var=groups
+
+- name: hosts
+  template:
+    dest: "{{ nagios_config_hosts_path }}/{{ item.name | mandatory }}.cfg"
+    src: hosts.cfg.j2
+    owner: "{{ nagios_config_user }}"
+    group: "{{ nagios_config_group }}"
+    mode: 0664
+  with_items: nagios_config_hosts
+
+- name: hostgroups
+  template:
+    dest: "{{ nagios_config_hostgroups_path }}/{{ item.name | mandatory }}.cfg"
+    src: hostgroups.cfg.j2
+    owner: "{{ nagios_config_user }}"
+    group: "{{ nagios_config_group }}"
+    mode: 0664
+  with_items: nagios_config_hostgroups
+
+- name: services
+  template:
+    dest: "{{ nagios_config_services_path }}/{{ item.name | mandatory }}.cfg"
+    src: services.cfg.j2
+    owner: "{{ nagios_config_user }}"
+    group: "{{ nagios_config_group }}"
+    mode: 0664
+  with_items: nagios_config_services
