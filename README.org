@@ -1,0 +1,113 @@
+* ansible-role-nagios-config
+
+This role deploys a nagios configuration to the nagios server.  To add
+commands that are not included in the vanilla nagios plugins, use the
+[[https://github.com/futuresystems/ansible-role-nagios-client][nagios-client]] role to add them.
+
+For nagios object definitions, a small number of required parameters
+are needed.  Further configuration is done my adding the nagios'
+object parameter as a defined attribute.
+
+* Variables
+
+| variable                          | default    | type                 | description                                   |
+|-----------------------------------+------------+----------------------+-----------------------------------------------|
+| =hosts=                           | *REQUIRED* | =[<host def>]=       | List of host definitions (see below)          |
+| =hostgroups=                      | *REQUIRED* | =[<host group def>]= | List of host group definitions (see below)    |
+| =services=                        | *REQUIRED* | =[<service def>]=    | List of service definitions (see below)       |
+| =default_host_max_check_attempts= | 5          | =int=                | Default value of nagios host config parameter |
+
+
+** Host Definition
+
+   A =host def= is a hash consisting of the following required attributes
+
+   - =name= (=string=): the name of the nagios object file in which to define these hosts
+   - =nodes= (=[string]=): a list of nodes (hostname or ip address
+   - =check_command= (=string=): the nagios command to use to check the host
+
+   Further customization of the host definition is supported: any
+   other attributes are simply appended to the object definition along
+   with their values. See [[https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#host][host options]] for a list of supported
+   parameters.
+
+
+** Host Group Definition
+
+   A =host group def= is a hash with the following required attributes
+
+   - =name= (=string=): the name of the group.
+   - =members= (=[string]=): list of short names for the hosts included in this group
+
+   Other attributes from the [[https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#hostgroup][hostgroup options]] are supported.
+
+** Service Definition
+
+   A =service grou def= is a hash with the following required attributes
+
+   - =name= (=string=): the name of the service
+   - =hostgroup_name= (=string=): the name of the hostgroup to check
+   - =service_description= (=string=): a description of the service check
+   - =check_command= (=string=): the nagios command object to call
+
+   Other attributes from the [[https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#service][service options]] are supported.
+
+* Example
+
+#+begin_src yaml
+- hosts: nagios-01
+  roles:
+
+    - role: nagios_config
+
+      nagios_config_hosts:
+        - name: all
+          nodes: "{{ groups['all'] }}"
+          check_interval: 1
+          check_period: 24x7
+          check_freshness: 1
+          check_command: >-
+            check_ping!100.0,20%!500.0,60%
+
+      nagios_config_hostgroups:
+
+        - name: all
+          members: "{{ groups['all'] }}"
+
+        - name: ceilometer
+          members: "{{ groups['ceilo'] }}"
+
+      nagios_config_services:
+
+        - name: ping
+          hostgroup_name: all
+          service_description: Can be pinged
+          check_command: >-
+            check_ping!100.0,20%!500.0,60%
+
+        - name: check_load_ok
+          hostgroup_name: all
+          service_description: Load OK
+          check_command: check_nrpe!check_load
+
+        - name: check_proc_ntpd
+          hostgroup_name: ntp
+          service_description: ntpd running
+          check_command: check_nrpe!check_proc_ntpd
+
+        - name: mysqld
+          hostgroup_name: database
+          service_description: mysqld running
+          check_command: check_nrpe!check_proc_mysqld
+
+        - name: apache_running
+          hostgroup_name: apache
+          service_description: apache running
+          check_command: check_nrpe!check_proc_apache
+
+        - name: glance_api
+          hostgroup_name: glance
+          service_description: glance-api
+          check_command: check_nrpe!check_proc_glance-api
+
+#+end_src
