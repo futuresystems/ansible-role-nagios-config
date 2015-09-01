@@ -54,6 +54,17 @@ object parameter as a defined attribute.
 
 * Example
 
+1.  Add =jinja2_extensions = jinja2.ext.loopcontrols= to your
+    =ansible.cfg=
+
+2.  Add this role to  your deployment
+
+#+BEGIN_EXAMPLE
+$ git submodule add https://github.com/futuresystems/ansible-role-nagios-config.git roles nagios_config
+#+END_EXAMPLE
+
+3.  deploy something like the following
+
 #+begin_src yaml
 - hosts: nagios-01
   roles:
